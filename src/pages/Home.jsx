@@ -33,12 +33,12 @@ export default function Home() {
     }
 
     useEffect(() => {
-        getData();
+        setBooks(books);
     }, [])
 
     useEffect(() => {
          if(searchTerm === ""){
-            setBooks([]);
+            getData();
         }else{
             const bookData = originalData.filter(book => book.title.toLowerCase().startsWith(searchTerm.trim().toLowerCase()));
             setBooks(bookData);
