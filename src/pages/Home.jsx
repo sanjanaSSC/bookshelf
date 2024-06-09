@@ -105,7 +105,7 @@ export default function Home() {
                         </div>
                         :
                         <div className='flex justify-center'>
-                            <h2 className='text-4xl mt-12 text-rose-950'><em>{searchTerm ? "NO BOOKS FOUND!" : "FIND AMAZING BOOKS TO READ"}</em></h2>
+                            <h2 className='text-4xl mt-12 text-rose-950'><em>NO BOOKS FOUND!</em></h2>
                         </div>
                     }
                 </div>
