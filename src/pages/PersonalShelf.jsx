@@ -4,10 +4,15 @@ import BookCard from '../component/BookCard';
 import shelf from '../img/pshelf.jpg'
 import home from '../img/home.png'
 import { Link } from 'react-router-dom';
+import {savedBooksAtom} from "../store/SavedBooksAtom"
+import {useRecoilValue} from "recoil"
+
 
 
 export default function PersonalShelf() {
   const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
+  const savedBooks = useRecoilValue(savedBooksAtom)
+
   console.log(personalBooks,"books")
 
   return (

@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 import { PersonalBooksContext } from '../App';
 import shelf from '../img/shelf2.jpg'
 import bookImg from '../img/storytelling (1).png'
+import {savedBooksAtom} from "../store/SavedBooksAtom"
+import {useSetRecoilState} from "recoil"
+
 
 
 
@@ -15,6 +18,7 @@ export default function Home() {
     const[originalData, setOriginalData] = useState([]);
     const[searchTerm, setSearchTerm] = useState("");
     const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
+    const setSavedBooks = useSetRecoilState(savedBooksAtom)
 
 
 
