@@ -17,8 +17,8 @@ export default function Home() {
     const[books, setBooks] = useState([]);
     const[originalData, setOriginalData] = useState([]);
     const[searchTerm, setSearchTerm] = useState("");
-    const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
-    const setSavedBooks = useSetRecoilState(savedBooksAtom)
+    // const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
+    const setSavedBooks = useSetRecoilState(savedBooksAtom);
 
 
 
@@ -50,30 +50,50 @@ export default function Home() {
         
     }, [searchTerm])
 
-    useEffect(() => {
-        const savedBooks = JSON.parse(localStorage.getItem('personalBooks'));
-        if (savedBooks) {
-            setPersonalBooks(savedBooks);
-        }
-    }, [setPersonalBooks]);
+    // useEffect(() => {
+    //     const savedBooks = JSON.parse(localStorage.getItem('personalBooks'));
+    //     if (savedBooks) {
+    //         setPersonalBooks(savedBooks);
+    //     }
+    // }, [setPersonalBooks]);
 
-    useEffect(() => {
-        localStorage.setItem('personalBooks', JSON.stringify(personalBooks));
-    }, [personalBooks]);
+    // useEffect(() => {
+    //     localStorage.setItem('personalBooks', JSON.stringify(personalBooks));
+    // }, [personalBooks]);
 
     function handleAdd({props}){
         const newBook = {
             title:props.title,
-            author:props.author_name[0]
+            author:props.author_name[0],
+            publisher: props.publisher[0],
+            date: props.publish_date,
+            type: props.type,
+            subject1 : props.subject_facet ? props.subject_facet[0] : "",
+            subject2 : props.subject_facet ? props.subject_facet[1] : "",
+            edition_key: props.edition_key
         }
-        setPersonalBooks(prevBooks => {
-            const updatedBooks = [...prevBooks, newBook];
-            localStorage.setItem('personalBooks', JSON.stringify(updatedBooks)); // Save to localStorage
-            return updatedBooks;
-        });
+        const alreadyPresentBook = JSON.parse(localStorage.getItem("personalBooks"));
+        const bookFound = alreadyPresentBook.filter((eachBook) => eachBook.edition_key[0] == newBook.edition_key)
+        console.log(newBook.edition_key,"key")
+        console.log(alreadyPresentBook,"present")
+        console.log(bookFound,"found")
+        if(bookFound.length > 0){
+          alert(`Book is already present in bookshelf`) 
+        }
+        else{
+
+
+        setSavedBooks((prevBooks) => {
+
+            localStorage.setItem("personalBooks", JSON.stringify([...prevBooks, newBook]) );
+            
+            return [...prevBooks, newBook]
+            
+            })
+
         alert(`Added ${props.title} to your Library`);
-        console.log(personalBooks);
-    
+        }
+
     }
 
   return (
