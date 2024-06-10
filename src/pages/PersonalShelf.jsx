@@ -47,7 +47,7 @@ export default function PersonalShelf() {
           {savedBooksLocalStorage.map((book, index) => {
             return (
               <div key={index}>
-                  <div  className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 pl-8 pr-3 bg-white  border-pink m-4 shadow-2xl	 py-8 rounded-md ' >
+                  <div  className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 px-8 bg-white  border-pink m-4 shadow-2xl	 py-8 rounded-md ' >
                     <div className='mr-14'>
                       <h2  className='text-2xl font-bold text-pink '><strong>{book.title}</strong></h2>
                       <h2  className='text-xl font-semibold '>{book.author}</h2>
