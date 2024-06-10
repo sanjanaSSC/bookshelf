@@ -22,6 +22,9 @@ export default function PersonalShelf() {
   // console.log(personalBooks,"books")
   console.log(savedBooksLocalStorage,"ls")
 
+  
+
+
   return (
     <div className='h-full  bg-sandybrown'>
       <div className='flex justify-between md:flex-row lg:flex-row py-3 px-3 fixed w-full bg-white border-b-2 border-b-black'>
