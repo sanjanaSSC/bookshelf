@@ -19,7 +19,7 @@ export default function Home() {
     const[searchTerm, setSearchTerm] = useState("");
     // const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
     const setSavedBooks = useSetRecoilState(savedBooksAtom);
-
+    const [isLoading, setIsloading] = useState(true)
 
 
 
@@ -29,6 +29,7 @@ export default function Home() {
             console.log(res.data.docs,"data");
             setBooks(res.data.docs)
             setOriginalData(res.data.docs)
+            setIsloading(false)
             // console.log(setBooks)
         }catch(err){
             console.log(err);
@@ -37,11 +38,13 @@ export default function Home() {
     }
 
     useEffect(() => {
+        setIsloading(true)
         setBooks(books);
     }, [])
 
     useEffect(() => {
          if(searchTerm === ""){
+            setIsloading(true)
             getData();
         }else{
             const bookData = originalData.filter(book => book.title.toLowerCase().startsWith(searchTerm.trim().toLowerCase()));
@@ -50,16 +53,7 @@ export default function Home() {
         
     }, [searchTerm])
 
-    // useEffect(() => {
-    //     const savedBooks = JSON.parse(localStorage.getItem('personalBooks'));
-    //     if (savedBooks) {
-    //         setPersonalBooks(savedBooks);
-    //     }
-    // }, [setPersonalBooks]);
-
-    // useEffect(() => {
-    //     localStorage.setItem('personalBooks', JSON.stringify(personalBooks));
-    // }, [personalBooks]);
+  
 
     function handleAdd({props}){
         const newBook = {
@@ -72,7 +66,10 @@ export default function Home() {
             subject2 : props.subject_facet ? props.subject_facet[1] : "",
             edition_key: props.edition_key
         }
-        const alreadyPresentBook = JSON.parse(localStorage.getItem("personalBooks"));
+        let alreadyPresentBook = []
+        if(JSON.parse(localStorage.getItem("personalBooks")) != null){
+            alreadyPresentBook = JSON.parse(localStorage.getItem("personalBooks"));
+        }
         const bookFound = alreadyPresentBook.filter((eachBook) => eachBook.edition_key[0] == newBook.edition_key)
         console.log(newBook.edition_key,"key")
         console.log(alreadyPresentBook,"present")
@@ -130,7 +127,14 @@ export default function Home() {
                         </div>
                         :
                         <div className='flex justify-center'>
-                            <h2 className='text-4xl mt-12 text-rose-950'><em>NO BOOKS FOUND!</em></h2>
+                            {
+                                (isLoading == true) ? 
+                                <div class="flex justify-center items-center my-5">
+                                    <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-gray-900"></div>
+                                </div>
+                                :
+                                <h2 className='text-4xl mt-12 text-rose-950'><em>NO BOOKS FOUND!</em></h2>
+                            }
                         </div>
                     }
                 </div>

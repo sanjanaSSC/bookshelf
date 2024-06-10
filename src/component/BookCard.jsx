@@ -9,10 +9,10 @@ export default function BookCard({props, handleAdd}) {
       <h2 className='text-xs mt-2'>Publish date : {props.publish_date}</h2>
       <h2 className='text-xs mt-2'>Type : {props.type}</h2>
       <h2 className='text-xs mt-2'>{props.subject_facet ? props.subject_facet[0] : ""}  {props.subject_facet ? props.subject_facet[1] : ""}</h2>
-      <button className='border-2 border-pink shadow-xl bg-white px-4 rounded-md text-black font-semibold py-1 mt-5 ' 
+      <button className='border-2 border-pink shadow-xl bg-white px-4 rounded-md text-black font-semibold py-1 mt-5 hover:bg-[#f1dfdf]' 
       onClick={() => handleAdd({props})}         
       aria-label={`Add ${props.title} to my Library`}
-      >ADD to my Library</button>
+      >ADD to My Bookshelf</button>
     </div>
   )
 }
