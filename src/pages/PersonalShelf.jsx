@@ -29,7 +29,7 @@ export default function PersonalShelf() {
           <Link to='/'>
             <button><img src={home} alt="" className=' m-3 ml-1 md:m-4 lg:m-4 md:ml-10 lg:ml-10'/></button>
           </Link>
-            <h2 className='txt-xl md:text-3xl lg:text-3xl bg-white ml-0 flex justify-center text-pink mt-2'><strong>MY BOOKSHELF</strong></h2>
+            <h2 className='txt-xl md:text-3xl lg:text-3xl bg-white ml-0 flex justify-center text-pink mt-3 md:mt-2 lg:mt-2'><strong>MY BOOKSHELF</strong></h2>
         </div>
        
         <button className="text-sm md:text-md lg:text-md text-white py-1 font-medium rounded-md px-3  bg-pink" onClick={()=>{
@@ -47,7 +47,7 @@ export default function PersonalShelf() {
           {savedBooksLocalStorage.map((book, index) => {
             return (
               <div key={index}>
-                  <div  className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 pl-8 bg-white  border-pink m-4 shadow-2xl	 py-8 rounded-md ' >
+                  <div  className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 pl-8 pr-3 bg-white  border-pink m-4 shadow-2xl	 py-8 rounded-md ' >
                     <div className='mr-14'>
                       <h2  className='text-2xl font-bold text-pink '><strong>{book.title}</strong></h2>
                       <h2  className='text-xl font-semibold '>{book.author}</h2>
