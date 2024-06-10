@@ -115,7 +115,7 @@ export default function Home() {
                             <div  className=' mt-6'>{books.map((book, index) => {
                             return(
                                 <div>
-                                    <div className='ml-4 mr-8 md:m-0'>
+                                    <div className='ml-2 mr-4 md:m-0'>
                                         <BookCard key={index} props={book} handleAdd={handleAdd}/>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@ export default function Home() {
                                     <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-gray-900"></div>
                                 </div>
                                 :
-                                <h2 className='text-4xl mt-12 text-rose-950'><em>NO BOOKS FOUND!</em></h2>
+                                <h2 className='text-2xl md:text-4xl lg:text-4xl mt-12 text-rose-950'><em>NO BOOKS FOUND!</em></h2>
                             }
                         </div>
                     }
