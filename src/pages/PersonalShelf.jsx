@@ -6,6 +6,8 @@ import home from '../img/home.png'
 import { Link, useNavigate } from 'react-router-dom';
 import {savedBooksAtom} from "../store/SavedBooksAtom"
 import {useRecoilValue, useSetRecoilState} from "recoil"
+import NavBar from '../component/NavBar';
+import axios from 'axios'
 
 
 
@@ -22,12 +24,25 @@ export default function PersonalShelf() {
   // console.log(personalBooks,"books")
   console.log(savedBooksLocalStorage,"ls")
 
+   function handleDelete(id){
+    // const filteredBooks = savedBooksLocalStorage.filter(book => book.id != id);
+    // setSavedBooks(filteredBooks);
+
+      // console.log(res.data.books)
+      const filteredBooks = savedBooksLocalStorage.filter(book => book.id != id);
+      setSavedBooks(filteredBooks);
+      localStorage.setItem("personalBooks", JSON.stringify(filteredBooks));
+    
+    
+  }
+
   
 
 
   return (
-    <div className='h-full  bg-sandybrown'>
-      <div className='flex justify-between md:flex-row lg:flex-row py-3 px-3 fixed w-full bg-white border-b-2 border-b-black'>
+    <div className='h-full  bg-beige'>
+      <NavBar/>
+      {/* <div className='flex justify-between py-3 px-3 fixed w-full bg-white border-b-2 border-b-black'>
         <div className='flex flex-row'>
           <Link to='/'>
             <button><img src={home} alt="" className=' m-3 ml-1 md:m-4 lg:m-4 md:ml-10 lg:ml-10'/></button>
@@ -41,30 +56,23 @@ export default function PersonalShelf() {
           navigate("/self",{replace:true})
           }}>Remove Books
         </button>
-      </div>
-      <div style={{backgroundImage:`url(${shelf})`}} className='w-full h-full pt-28 min-h-[100vh]'>
-      <div className='mx-8 md:mx-20 lg:mx-20 '>
+      </div> */}
+      <div className='mx-8 md:mx-20 lg:mx-20'>
+        <h2 className='ml-4 text-4xl  font-bold text-pink mb-8 mt-12'>Welcome To My Personal Library!</h2>
+      <div>
         {savedBooksLocalStorage.length > 0 ?
         <div>
-          <div className='flex flex-col '>
+          <div className='grid grid-cols-3'>
           {savedBooksLocalStorage.map((book, index) => {
             return (
               <div key={index}>
-                  <div  className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 px-6 md:px-8 lg:px-8 bg-white  border-pink m-4 shadow-2xl	 py-8 rounded-md ' >
-                    <div className='mr-14'>
-                      <h2  className='text-3xl font-bold text-pink '><strong>{book.title}</strong></h2>
-                      <h2  className='text-xl mt-2 font-semibold '>{book.author}</h2>
-                    </div>
-                    <div className='col-span-1 grid md:grid-cols-2 lg:grid-cols-2 mt-3 md:mt-0 lg:mt-0 '>
-                      <div className='md:col-span-1 lg:col-span-1 w-full'>
-                        <h2 className='text-sm mt-2 font-medium'><strong>Publisher :</strong> {book.publisher}</h2>
-                        <h2 className='text-sm mt-2 font-medium'><strong>Publish Date :</strong> {book.date}</h2>                 
-                      </div>
-                      <div  className='md:col-span-1 lg:col-span-1 md:ml-28 lg:ml-40 w-full'>
-                        <h2 className='text-sm mt-2 font-medium'><strong>Type: </strong>{book.type}</h2>
-                        <h2 className='text-sm mt-2 font-medium'><strong>Subject: </strong>{book.subject1} {book.subject2}</h2>
-                      </div>
-                    </div>
+                  <div  className='px-6 md:px-8 lg:px-8 bg-white border-pink m-4 shadow-3xl py-8 rounded-md min-h-[55vh]' >
+                      <h2 className='text-3xl font-bold text-pink '><strong>{book.name}</strong></h2>
+                      <h2 className='text-xl mt-2 font-semibold '>{book.author}</h2>
+                      <h2 className='text-sm mt-2 font-medium'><strong>Publisher :</strong> {book.publisher}</h2>
+                      <h2 className='text-sm mt-2 font-medium'><strong>Publish Date :</strong> {book.date}</h2>                 
+                      <h2 className='text-sm mt-2 font-medium'><strong>Genre: </strong>{book.genre}</h2>
+                      <button onClick={()=>handleDelete(book.id)}>Delete</button>
                   </div>
               </div>
             )

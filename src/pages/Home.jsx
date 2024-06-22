@@ -8,6 +8,7 @@ import shelf from '../img/shelf2.jpg'
 import bookImg from '../img/storytelling (1).png'
 import {savedBooksAtom} from "../store/SavedBooksAtom"
 import {useSetRecoilState} from "recoil"
+import NavBar from '../component/NavBar';
 
 
 
@@ -20,15 +21,20 @@ export default function Home() {
     // const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
     const setSavedBooks = useSetRecoilState(savedBooksAtom);
     const [isLoading, setIsloading] = useState(true)
+    const [currentIndex, setCurrentIndex] = useState(1);
 
+    const itemsPerPage = 6;
+
+    const startIndex = (currentIndex - 1) * itemsPerPage;
+    const totalPages = Math.ceil(books.length / itemsPerPage);
 
 
     async function getData(){
         try{
-            const res = await axios.get('https://openlibrary.org/search.json?q=YOUR_QUERY&limit=10&page=1')
-            console.log(res.data.docs,"data");
-            setBooks(res.data.docs)
-            setOriginalData(res.data.docs)
+            const res = await axios.get('http://localhost:3000/books')
+            console.log(res.data.books,"data");
+            setBooks(res.data.books)
+            setOriginalData(res.data.books)
             setIsloading(false)
             // console.log(setBooks)
         }catch(err){
@@ -47,31 +53,34 @@ export default function Home() {
             setIsloading(true)
             getData();
         }else{
-            const bookData = originalData.filter(book => book.title.toLowerCase().startsWith(searchTerm.trim().toLowerCase()));
+            const bookData = originalData.filter(book => book.name.toLowerCase().startsWith(searchTerm.trim().toLowerCase()));
             setBooks(bookData);
         }
         
     }, [searchTerm])
 
-  
+    const currentBooks = books.slice(startIndex, startIndex + itemsPerPage)
+    console.log(currentBooks,"curr")
+
+    const handleClick = (page) => {
+        setCurrentIndex(page);
+      };
 
     function handleAdd({props}){
         const newBook = {
-            title:props.title,
-            author:props.author_name[0],
-            publisher: props.publisher[0],
-            date: props.publish_date,
-            type: props.type,
-            subject1 : props.subject_facet ? props.subject_facet[0] : "",
-            subject2 : props.subject_facet ? props.subject_facet[1] : "",
-            edition_key: props.edition_key
+            name:props.name,
+            author:props.author,
+            publisher: props.publisher,
+            date: props.date,
+            genre: props.genre,
+            id: props.id
         }
         let alreadyPresentBook = []
         if(JSON.parse(localStorage.getItem("personalBooks")) != null){
             alreadyPresentBook = JSON.parse(localStorage.getItem("personalBooks"));
         }
-        const bookFound = alreadyPresentBook.filter((eachBook) => eachBook.edition_key[0] == newBook.edition_key)
-        console.log(newBook.edition_key,"key")
+        const bookFound = alreadyPresentBook.filter((eachBook) => eachBook.id == newBook.id)
+        console.log(newBook.id,"key")
         console.log(alreadyPresentBook,"present")
         console.log(bookFound,"found")
         if(bookFound.length > 0){
@@ -88,7 +97,7 @@ export default function Home() {
             
             })
 
-        alert(`Added ${props.title} to your Library`);
+        alert(`Added ${props.name} to your Library`);
         }
 
     }
@@ -99,37 +108,33 @@ export default function Home() {
     };
 
   return (
-    <div className=''>
-        <div className='flex flex-col md:pr-20  md:grid md:grid-cols-3 lg:grid lg:grid-cols-3 '>
-            <div className='md:col-span-1 lg:col-span-1 '>
-                <div className='h-[50vh] md:inline md:fixed md:h-full lg:inline	lg:fixed lg:h-full pt-40 w-full md:w-[32%] lg:w-[32%]' style={{backgroundImage:`url(${shelf})`}}>
-                <Link to='/self'>
-                    <button className='px-4 py-3 w-3/4 bg-white ml-8 text-rose-950 font-bold rounded-md shadow-lg hover:border-white flex items-center justify-center gap-3 hover:scale-105 hover:shadow-lg hover:bg-pink hover:text-white transition-all duration-300 ease-in-out cursor-pointer border-2 border-transparent hover:border-pink-600'
-                    onClick={handleNavigation}>
-                        <img src={bookImg} alt="Book" className='w-6 h-6'/>
-                        <h2 className='text-2xl'>MY BOOKSHELF</h2>
-                    </button>
-                </Link>
-
-                </div>
-            </div>
-            <div className='col-span-2 pb-20 pt-10 md:pl-20 pl-6 pr-6'>
+        <div className='bg-beige overflow-x-hidden'>
+            <NavBar/>
+            <div className='mx-20 py-20'>
                 <SearchBar setSearchTerm={setSearchTerm}/>
-                <div>
-                    {books.length > 0 ? 
-                        <div>
-                            <div  className=' mt-6'>{books.map((book, index) => {
+                <div className=''>
+                    {currentBooks.length > 0 ? 
+                        <div className=''>
+                            <div  className='grid grid-cols-3 gap-4 mt-6'>{currentBooks.map((book, index) => {
                             return(
-                                <div>
-                                    <div className='ml-2 mr-4 md:m-0'>
+                                    <div className='col-span-1'>
                                         <BookCard key={index} props={book} handleAdd={handleAdd}/>
                                     </div>
-                                </div>
                                 )
-                            })}</div>
-                            <div className='flex justify-center'>
-                                <h2 className='text-4xl mt-12 text-rose-950'><em>THE END!</em></h2>
-                            </div>    
+                            })}
+                            </div>   
+                            <div  className='flex justify-center'>
+                                {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleClick(index + 1)}
+                                    disabled={currentIndex === index + 1}
+                                    className='rounded-full p-1 px-2 m-1 border-2 border-pink text-pink font-bold hover:bg-white '
+                                >
+                                    {index + 1}
+                                </button>
+                                ))}
+                            </div>                          
                         </div>
                         :
                         <div className='flex justify-center'>
@@ -146,6 +151,5 @@ export default function Home() {
                 </div>
             </div>
         </div>
-    </div>
   )
 }

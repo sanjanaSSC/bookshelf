@@ -7,9 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        sandybrown: '#cbc0ae',
+        beige: '#fdfdef',
         pink:'#1f0318'
       },
+      boxShadow: {
+        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.4)'
+
+      }
     },
   },
   plugins: [],
