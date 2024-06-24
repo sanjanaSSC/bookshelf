@@ -37,8 +37,8 @@ export default function Login() {
                     onSubmit={async (values, { setSubmitting }) => {
                         console.log(values);
                         try{
-                            const res = await axios.post('http://localhost:3000/login', values);
-                            console.log(res.data.users);
+                            const res = await axios.post('http://localhost:5000/users/register', values);
+                            console.log(res.data.users, "response");
                     
                         }catch(err){
                             console.log('Error while Logging in');

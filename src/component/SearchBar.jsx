@@ -20,7 +20,7 @@ export default function SearchBar({setSearchTerm}) {
     //   />
     //   <img src={bookImg} alt="" className='absolute top-3 md:top-8   lg:top-8 left-7 md:left-8 lg:left-8 cursor-pointer'  onClick={handleInput}/>
     // </div>
-    <div className="flex justify-end mt-6">
+    <div className="flex justify-end">
     <div className="relative">
         <input type="text" 
         placeholder="Search..." 

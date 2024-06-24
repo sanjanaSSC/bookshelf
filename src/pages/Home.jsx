@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import { PersonalBooksContext } from '../App';
 import shelf from '../img/shelf2.jpg'
 import bookImg from '../img/storytelling (1).png'
-import {savedBooksAtom} from "../store/SavedBooksAtom"
-import {useSetRecoilState} from "recoil"
+import {filteredOptionAtom, genreFilterAtom, publisherFilterAtom, savedBooksAtom} from "../store/SavedBooksAtom"
+import {useRecoilState, useSetRecoilState} from "recoil"
 import NavBar from '../component/NavBar';
+import Filter from '../component/Filter';
 
 
 
@@ -18,10 +19,14 @@ export default function Home() {
     const[books, setBooks] = useState([]);
     const[originalData, setOriginalData] = useState([]);
     const[searchTerm, setSearchTerm] = useState("");
-    // const [personalBooks, setPersonalBooks] = useContext(PersonalBooksContext);
     const setSavedBooks = useSetRecoilState(savedBooksAtom);
     const [isLoading, setIsloading] = useState(true)
     const [currentIndex, setCurrentIndex] = useState(1);
+    const [filteredOptions, setFilteredOptions] = useRecoilState(filteredOptionAtom)
+    const [genreFilter, setGenreFilter] = useRecoilState(genreFilterAtom)
+    const [publisherFilter, setPublisherFilter] = useRecoilState(publisherFilterAtom)
+    const [filteredBooks, setFilteredBooks] = useState([]);  // Assuming you want to store the filtered books
+
 
     const itemsPerPage = 6;
 
@@ -31,7 +36,7 @@ export default function Home() {
 
     async function getData(){
         try{
-            const res = await axios.get('http://localhost:3000/books')
+            const res = await axios.get('http://localhost:5000/users/books')
             console.log(res.data.books,"data");
             setBooks(res.data.books)
             setOriginalData(res.data.books)
@@ -45,21 +50,53 @@ export default function Home() {
 
     useEffect(() => {
         setIsloading(true)
-        setBooks(books);
+        // setBooks(books);
+        getData();
     }, [])
 
-    useEffect(() => {
-         if(searchTerm === ""){
-            setIsloading(true)
-            getData();
-        }else{
-            const bookData = originalData.filter(book => book.name.toLowerCase().startsWith(searchTerm.trim().toLowerCase()));
-            setBooks(bookData);
-        }
-        
-    }, [searchTerm])
 
-    const currentBooks = books.slice(startIndex, startIndex + itemsPerPage)
+    useEffect(() => {
+        const filterBooks = () => {
+            let filtered = originalData;
+
+            if (searchTerm) {
+                filtered = filtered.filter(book =>
+                    book.name.toLowerCase().startsWith(searchTerm.trim().toLowerCase())
+                );
+            }
+
+            // if (filteredOptions.length > 0) {
+            //     filtered = filtered.filter(book =>
+            //         filteredOptions.some(eachGenre =>
+            //             eachGenre.toLowerCase() === book.genre.trim().toLowerCase()
+            //         )
+            //     );
+            // }
+
+            if (genreFilter.length > 0 && publisherFilter.length > 0) {
+                filtered = originalData.filter(book =>
+                    genreFilter.some(genre => genre.toLowerCase() === book.genre.trim().toLowerCase()) &&
+                    publisherFilter.some(publisher => publisher.toLowerCase() === book.publisher.trim().toLowerCase())
+                );
+            } else if (genreFilter.length > 0) {
+                filtered = originalData.filter(book =>
+                    genreFilter.some(genre => genre.toLowerCase() === book.genre.trim().toLowerCase())
+                );
+            } else if (publisherFilter.length > 0) {
+                filtered = originalData.filter(book =>
+                    publisherFilter.some(publisher => publisher.toLowerCase() === book.publisher.trim().toLowerCase())
+                );
+            }
+
+            setFilteredBooks(filtered);
+            setBooks(filtered); // Update the main books state for pagination
+            setIsloading(false);
+        };
+
+        filterBooks();
+    }, [searchTerm, genreFilter, publisherFilter, originalData]);
+
+    const currentBooks = filteredBooks.slice(startIndex, startIndex + itemsPerPage)
     console.log(currentBooks,"curr")
 
     const handleClick = (page) => {
@@ -111,7 +148,10 @@ export default function Home() {
         <div className='bg-beige overflow-x-hidden'>
             <NavBar/>
             <div className='mx-20 py-20'>
-                <SearchBar setSearchTerm={setSearchTerm}/>
+                <div className='flex '>
+                    <SearchBar setSearchTerm={setSearchTerm}/>
+                    <Filter/>
+                </div>
                 <div className=''>
                     {currentBooks.length > 0 ? 
                         <div className=''>
